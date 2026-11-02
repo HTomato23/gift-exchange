@@ -24,7 +24,7 @@ const sections = [
     items: [
       'You can see and edit your own details until the draw is made.',
       'After the draw, the person who drew you (your Secret Santa) can see your name, wishes, links and notes. They cannot see your email address.',
-      'The organizer (admin) can see everyone’s details, including email addresses and family groups, to run the exchange.',
+      'The organizer (admin) can see everyone’s details, including email addresses, family groups and who was matched with whom, to run the exchange.',
       'Other participants cannot see your details.',
     ],
   },

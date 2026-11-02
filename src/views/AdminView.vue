@@ -209,6 +209,53 @@ async function setFamily(person, value) {
 }
 
 const displayName = (p) => (p.nickname ? `${p.nickname} (${p.full_name})` : p.full_name)
+
+// ---------- Draw results (admin only; RLS lets only is_admin() read assignments) ----------
+// Hidden until the admin taps "Show", and only fetched then, because the admin is also
+// a participant and might not want to see who drew them.
+const matches = ref([])
+const showMatches = ref(false)
+const loadingMatches = ref(false)
+
+const personById = computed(() => Object.fromEntries(participants.value.map((p) => [p.id, p])))
+const familyName = (id) => families.value.find((f) => f.id === id)?.name ?? null
+
+async function revealMatches() {
+  loadingMatches.value = true
+  const { data, error: err } = await supabase.from('assignments').select('giver_id, receiver_id')
+  loadingMatches.value = false
+  if (err) {
+    error.value = err.message
+    return
+  }
+  matches.value = orderAsLoop(data ?? [])
+  showMatches.value = true
+}
+
+// run_draw() makes one loop, so list it in loop order: A → B, B → C, … → A.
+function orderAsLoop(rows) {
+  const byGiver = new Map(rows.map((r) => [r.giver_id, r]))
+  const ordered = []
+  const seen = new Set()
+  for (const start of rows) {
+    let row = start
+    while (row && !seen.has(row.giver_id)) {
+      seen.add(row.giver_id)
+      ordered.push(row)
+      row = byGiver.get(row.receiver_id)
+    }
+  }
+  return ordered
+}
+
+const matchName = (id) => {
+  const p = personById.value[id]
+  return p ? p.nickname || p.full_name : 'Unknown'
+}
+const matchFamily = (id) => {
+  const p = personById.value[id]
+  return p?.family_id ? familyName(p.family_id) : null
+}
 </script>
 
 <template>
@@ -439,6 +486,69 @@ const displayName = (p) => (p.nickname ? `${p.nickname} (${p.full_name})` : p.fu
               <p class="text-xs text-base-content/60">
                 After the draw, nobody can join or change their wish list.
               </p>
+            </template>
+          </div>
+        </section>
+
+        <!-- 4. Draw results -->
+        <section
+          v-if="drawDone"
+          class="card bg-base-100 shadow-sm motion-safe:animate-rise [animation-delay:0.4s]"
+        >
+          <div class="card-body gap-3">
+            <h2 class="card-title text-secondary">🎁 Who's buying for whom</h2>
+
+            <template v-if="!showMatches">
+              <p class="text-sm text-base-content/70">
+                The matches are hidden so you don't spoil your own surprise. Only you (the admin)
+                can see this.
+              </p>
+              <button
+                class="btn btn-outline btn-secondary btn-block"
+                :disabled="loadingMatches"
+                @click="revealMatches"
+              >
+                <span v-if="loadingMatches" class="loading loading-spinner loading-sm"></span>
+                👀 Show the matches
+              </button>
+            </template>
+
+            <template v-else>
+              <p class="text-sm text-base-content/70">
+                Everyone in one gift loop, in order. {{ matches.length }}
+                {{ matches.length === 1 ? 'match' : 'matches' }}.
+              </p>
+
+              <p v-if="!matches.length" class="text-sm text-base-content/60 italic">
+                No matches found.
+              </p>
+
+              <ol v-else class="flex flex-col gap-2">
+                <li
+                  v-for="(m, i) in matches"
+                  :key="m.giver_id"
+                  class="flex items-center gap-2 rounded-box bg-base-200 p-3"
+                >
+                  <span class="badge badge-primary badge-sm shrink-0">{{ i + 1 }}</span>
+                  <div class="min-w-0 flex-1">
+                    <p class="font-medium wrap-break-word">{{ matchName(m.giver_id) }}</p>
+                    <p v-if="matchFamily(m.giver_id)" class="text-xs text-base-content/60">
+                      {{ matchFamily(m.giver_id) }}
+                    </p>
+                  </div>
+                  <span class="shrink-0 text-xl text-accent" aria-label="buys for">🎁→</span>
+                  <div class="min-w-0 flex-1 text-right">
+                    <p class="font-medium wrap-break-word">{{ matchName(m.receiver_id) }}</p>
+                    <p v-if="matchFamily(m.receiver_id)" class="text-xs text-base-content/60">
+                      {{ matchFamily(m.receiver_id) }}
+                    </p>
+                  </div>
+                </li>
+              </ol>
+
+              <button class="btn btn-ghost btn-sm self-center" @click="showMatches = false">
+                🙈 Hide the matches
+              </button>
             </template>
           </div>
         </section>
