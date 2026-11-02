@@ -12,7 +12,7 @@ export const EVENT = {
   location: 'Matienzo Compound',
 
   // Extra line under the place on the Event Details tile ('' to hide it)
-  extra: 'Potluck · Bring a dish!',
+  extra: 'Potluck',
 
   // Day the dashboard counts down to (month 1–12). Repeats every year.
   countdownTo: { month: 12, day: 27 },

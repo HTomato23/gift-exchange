@@ -55,7 +55,7 @@ Static site (`dist/`). `.env` values are baked in at build time, so build with t
 
 ## Database (read-only reference)
 
-Full schema, RLS policies, trigger and functions: `gift-exchange-setup.sql` in the project root (the owner's setup script — reference only, never run or edit it).
+Full schema, RLS policies, trigger and functions: `gift-exchange-setup.sql` in the project root (the owner's setup script, kept up to date with the live database; reference only — never run it. **Section 0 drops all tables and functions, so running it deletes all data.** Gitignored.).
 
 **family**: `id` bigint, `name` text unique (1–100 chars), `created_at`. A family = a sibling set; people in the same family can't draw each other.
 
@@ -64,8 +64,8 @@ Full schema, RLS policies, trigger and functions: `gift-exchange-setup.sql` in t
 - `email` — filled in by the `participants_before_write` trigger from the Google login
 - `full_name` (required, 1–100 chars after trim), `nickname` (optional, ≤ 50)
 - `family_id` bigint → family (optional; **admin-only** — the trigger ignores it from non-admins)
-- `wish_1`, `link_1`, `wish_2`, `link_2`, `wish_3`, `link_3` — **all optional** (wishes ≤ 200; the owner made `wish_1` optional — `gift-exchange-setup.sql` still says required). People with no wishes can tap "Surprise me!", which adds that text to `notes`.
-- `notes` (optional, ≤ 200 — sizes, likes, things to avoid; renamed from `sizes`, so `gift-exchange-setup.sql` still says `sizes`), `created_at` / `updated_at` (automatic)
+- `wish_1`, `link_1`, `wish_2`, `link_2`, `wish_3`, `link_3` — **all optional** (wishes ≤ 200). People with no wishes can tap "Surprise me!", which adds that text to `notes`.
+- `notes` (optional, ≤ 200 — sizes, likes, things to avoid), `created_at` / `updated_at` (automatic)
 - Links must match `^https?://`, or the DB rejects the row. Validate this and the length limits in forms too.
 - **When a user signs up, the frontend must NOT send `email`, `user_id`, or `family_id`.**
 - Users cannot delete their own row (admin only).
@@ -75,7 +75,7 @@ Full schema, RLS policies, trigger and functions: `gift-exchange-setup.sql` in t
 RPC functions (`supabase.rpc(...)`, all require sign-in):
 - `is_admin()` → boolean (compares the JWT email to the admin email)
 - `draw_done()` → boolean (true once any assignment exists)
-- `my_match()` → the signed-in user's receiver (name, wishes, links, notes) — **added by the owner; not in `gift-exchange-setup.sql`**. Takes no arguments; must never return email, family_id, or anyone else's match. Its exact columns are not confirmed yet: `normaliseMatch()` in `DrawView.vue` maps them. Until it exists, `/draw` shows a placeholder (error `PGRST202`).
+- `my_match()` → the signed-in user's receiver: one row (or none) with `nickname`, `full_name`, `wish_1..3`, `link_1..3`, `notes`. No arguments; never returns email, family_id, or anyone else's match (the privacy policy promises this). Used by `/draw`; `normaliseMatch()` in `DrawView.vue` reads it.
 - `run_draw()` → text — admin only; shuffles everyone into one loop with no same-family pairs. Fails if < 3 participants, a family is more than half of everyone, or the draw was already run. Called from the `/admin` page.
 
 ## Security rules (enforced by RLS in the database)
