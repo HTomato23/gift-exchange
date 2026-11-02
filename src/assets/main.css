@@ -1,0 +1,109 @@
+@import 'tailwindcss';
+@plugin "daisyui";
+
+/* Site-wide font: Poppins (installed via @fontsource/poppins, imported in main.js). */
+@theme {
+  --font-sans: 'Poppins', ui-sans-serif, system-ui, sans-serif;
+
+  /* Festive animations, used as Tailwind classes: animate-float, animate-snowfall, animate-rise */
+  --animate-float: float 4s ease-in-out infinite;
+  --animate-snowfall: snowfall 12s linear infinite;
+  --animate-rise: rise 0.7s ease-out both;
+
+  @keyframes float {
+    0%,
+    100% {
+      transform: translateY(0) rotate(-3deg);
+    }
+    50% {
+      transform: translateY(-10px) rotate(3deg);
+    }
+  }
+
+  @keyframes snowfall {
+    from {
+      transform: translateY(-10vh) rotate(0deg);
+    }
+    to {
+      transform: translateY(110vh) rotate(360deg);
+    }
+  }
+
+  @keyframes rise {
+    from {
+      opacity: 0;
+      transform: translateY(24px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Gift shaking while the match is being revealed (animate-shake) */
+  --animate-shake: shake 0.5s ease-in-out infinite;
+
+  @keyframes shake {
+    0%,
+    100% {
+      transform: rotate(0deg) scale(1);
+    }
+    25% {
+      transform: rotate(-12deg) scale(1.05);
+    }
+    75% {
+      transform: rotate(12deg) scale(1.05);
+    }
+  }
+}
+
+/*
+ * Festive theme: white + pine green, with gold highlights and small red touches.
+ * Light take on the reference in src/assets/images/image.jpg — very rounded cards,
+ * pill-shaped buttons, deep green text.
+ */
+@plugin "daisyui/theme" {
+  name: 'festive';
+  default: true;
+  prefersdark: false;
+  color-scheme: light;
+
+  /* Surfaces: white cards on a soft mint-white page */
+  --color-base-100: oklch(100% 0 0);
+  --color-base-200: oklch(97% 0.012 150);
+  --color-base-300: oklch(92% 0.022 150);
+  --color-base-content: oklch(27% 0.05 155);
+
+  /* Forest green: main buttons, navbar, key actions */
+  --color-primary: oklch(48% 0.12 148);
+  --color-primary-content: oklch(99% 0.005 150);
+  /* Deep pine: secondary buttons, dark highlights */
+  --color-secondary: oklch(31% 0.07 152);
+  --color-secondary-content: oklch(99% 0.005 150);
+  /* Gold: badges, subtitles, small sparkle */
+  --color-accent: oklch(84% 0.15 90);
+  --color-accent-content: oklch(28% 0.06 90);
+  /* Near-black green: dark surfaces like the "Let it snow" button */
+  --color-neutral: oklch(24% 0.045 155);
+  --color-neutral-content: oklch(98% 0.005 150);
+
+  --color-info: oklch(62% 0.13 220);
+  --color-info-content: oklch(99% 0.005 220);
+  --color-success: oklch(60% 0.15 145);
+  --color-success-content: oklch(99% 0.005 145);
+  --color-warning: oklch(80% 0.15 80);
+  --color-warning-content: oklch(28% 0.06 80);
+  /* Christmas red, used for errors */
+  --color-error: oklch(57% 0.21 27);
+  --color-error-content: oklch(99% 0.005 27);
+
+  /* Shape: very rounded cards, pill buttons and inputs */
+  --radius-selector: 2rem;
+  --radius-field: 2rem;
+  --radius-box: 1.75rem;
+  --size-selector: 0.25rem;
+  --size-field: 0.3rem;
+  --border: 1px;
+  --depth: 1;
+  --noise: 0;
+}
