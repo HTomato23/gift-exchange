@@ -5,6 +5,7 @@ import DashboardView from '@/views/DashboardView.vue'
 import WishlistView from '@/views/WishlistView.vue'
 import DrawView from '@/views/DrawView.vue'
 import AdminView from '@/views/AdminView.vue'
+import PrivacyView from '@/views/PrivacyView.vue'
 import { supabase } from '@/supabase'
 
 const router = createRouter({
@@ -35,6 +36,8 @@ const router = createRouter({
       component: AdminView,
       meta: { requiresAuth: true, requiresAdmin: true },
     },
+    // Public privacy policy (no sign-in needed; linked from Google's consent screen)
+    { path: '/privacy', name: 'privacy', component: PrivacyView },
     { path: '/:pathMatch(.*)*', redirect: '/' },
   ],
 })

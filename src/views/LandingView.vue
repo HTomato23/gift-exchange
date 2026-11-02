@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from 'vue'
+import { RouterLink } from 'vue-router'
 import { signInWithGoogle } from '@/auth'
 import SnowBackground from '@/components/SnowBackground.vue'
 
@@ -35,24 +36,25 @@ async function handleSignIn() {
         >
         <span class="absolute top-10 right-6 text-sm text-accent" aria-hidden="true">✦</span>
         <span class="absolute bottom-5 left-8 text-xs text-accent" aria-hidden="true">✦</span>
-        <span class="absolute right-10 bottom-4 text-base text-primary-content/50" aria-hidden="true"
+        <span
+          class="absolute right-10 bottom-4 text-base text-primary-content/50"
+          aria-hidden="true"
           >❄</span
         >
 
-<!--         
+        <!--         
           GRAPHIC PLACEHOLDER — replace this whole box with the real Christmas graphic, e.g.
           <img src="@/assets/images/landing.png" alt="" class="h-48 w-full object-contain" />
         -->
-        <div
-          class="flex h-40 w-full flex-col items-center justify-center gap-2 rounded-box"
-        >
+        <div class="flex h-40 w-full flex-col items-center justify-center gap-2 rounded-box">
           <span class="text-7xl motion-safe:animate-float" aria-hidden="true">🎁</span>
-          <span class="text-xs text-center font-medium text-primary-content/70">Yearly Tradition Exchange Gift</span>
+          <span class="text-xs text-center font-medium text-primary-content/70"
+            >Yearly Tradition Exchange Gift</span
+          >
         </div>
       </figure>
 
       <div class="card-body items-center gap-4 text-center">
-
         <div>
           <h1 class="text-3xl font-bold text-secondary">Exchange Gift {{ year }}</h1>
           <p class="mt-1 text-base-content/70">
@@ -60,11 +62,7 @@ async function handleSignIn() {
           </p>
         </div>
 
-        <button
-          class="btn btn-primary btn-block"
-          :disabled="signingIn"
-          @click="handleSignIn"
-        >
+        <button class="btn btn-primary btn-block" :disabled="signingIn" @click="handleSignIn">
           <span v-if="signingIn" class="loading loading-spinner loading-sm"></span>
           <span v-else class="rounded-full bg-white p-1" aria-hidden="true">
             <!-- Google "G" logo -->
@@ -94,7 +92,10 @@ async function handleSignIn() {
           <span>{{ error }}</span>
         </div>
 
-        <p class="text-xs text-base-content/60">Only for our family &amp; friends 💚</p>
+        <p class="text-xs text-base-content/60">
+          Only for our family &amp; friends 💚 ·
+          <RouterLink :to="{ name: 'privacy' }" class="link link-hover">Privacy Policy</RouterLink>
+        </p>
       </div>
     </div>
   </div>

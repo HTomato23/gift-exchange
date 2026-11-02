@@ -16,4 +16,7 @@ export const EVENT = {
 
   // Day the dashboard counts down to (month 1–12). Repeats every year.
   countdownTo: { month: 12, day: 27 },
+
+  // Contact shown on the Privacy Policy page (/privacy)
+  contactEmail: 'bautistalanz0423@gmail.com',
 }
