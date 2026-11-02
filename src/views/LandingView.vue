@@ -94,7 +94,6 @@ async function handleSignIn() {
 
         <p class="text-xs text-base-content/60">
           Only for our family &amp; friends 💚 ·
-          <RouterLink :to="{ name: 'privacy' }" class="link link-hover">Privacy Policy</RouterLink>
         </p>
       </div>
     </div>
