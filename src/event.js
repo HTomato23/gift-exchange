@@ -8,7 +8,7 @@ export const EVENT = {
   giftAmountExtra: 'Wrap it with love',
 
   // When and where the exchange happens, e.g. 'Dec 24, 7:00 PM' and "Lola's house"
-  date: 'December 27, 2026 | 6:00 PM',
+  date: 'December 27, 2026 | 5:00 PM',
   location: 'Matienzo Compound',
 
   // Extra line under the place on the Event Details tile ('' to hide it)
